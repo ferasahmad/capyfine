@@ -1,13 +1,16 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { router, Tabs } from "expo-router";
-import { Pressable, Text } from "react-native";
+import { Alert, Pressable, Text } from "react-native";
 
 import { HapticTab } from "@/components/haptic-tab";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { capyfinePalette } from "@/tamagui.config";
 
 function logout() {
-  router.replace("/(public)/login");
+  Alert.alert("Logout", "Are you sure you want to logout?", [
+    { text: "Cancel", style: "cancel" },
+    { text: "Logout", onPress: () => router.replace("/(public)") },
+  ]);
 }
 
 export default function AuthedTabLayout() {
