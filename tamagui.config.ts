@@ -6,38 +6,42 @@ import { createTamagui, createTokens } from 'tamagui';
  * Use this for non-Tamagui APIs (e.g. React Navigation).
  */
 export const capyfinePalette = {
-  lightBackground: '#F9F7F3',
-  lightSurface: '#FFFFFF',
-  lightPrimary: '#E8DCCB',
-  lightSecondary: '#C7B8A3',
-  lightTextPrimary: '#2E2E2E',
-  lightTextSecondary: '#6F6F6F',
-  lightTextPlaceholder: '#A8A29E',
-  lightAccent: '#6D8B74',
-  lightAccentHover: '#5E7865',
-  lightCta: '#F2A65A',
-  lightCtaHover: '#D98C3F',
-  lightBorder: '#E5E0D8',
-  lightInputBorder: '#D6D0C7',
-  lightError: '#D96C6C',
+  lightBackground: '#FBF6EE',
+  lightSurface: '#FFFCF8',
+  lightPrimary: '#F4EDE2',
+  lightSecondary: '#E7DCCB',
+  lightTextPrimary: '#433C35',
+  lightTextSecondary: '#7A7065',
+  lightTextPlaceholder: '#B6AB9D',
+  lightAccent: '#667A58',
+  lightAccentHover: '#58694B',
+  lightCta: '#C98942',
+  lightCtaHover: '#B17839',
+  lightBorder: '#EEE2D3',
+  lightInputBorder: '#E9DFD2',
+  lightError: '#C96F67',
+  /** Soft mint surface (e.g. featured cards) */
+  lightMintCard: '#EEF4E1',
 
-  darkBackground: '#1F1F1D',
-  darkSurface: '#2A2A28',
-  darkPrimary: '#BFB2A3',
-  darkSecondary: '#8E857A',
-  darkTextPrimary: '#ECEAE6',
-  darkTextSecondary: '#B5B0A8',
-  darkTextPlaceholder: '#7A746B',
-  darkAccent: '#7FAF8A',
-  darkAccentHover: '#6F9E7A',
-  darkCta: '#E59A52',
-  darkCtaHover: '#C97F3C',
-  darkBorder: '#3A3936',
-  darkInputBorder: '#44423E',
-  darkError: '#E07A7A',
+  darkBackground: '#211E1A',
+  darkSurface: '#2A2622',
+  darkPrimary: '#393228',
+  darkSecondary: '#4A4238',
+  darkTextPrimary: '#F3EDE3',
+  darkTextSecondary: '#C2B6A7',
+  darkTextPlaceholder: '#8F8376',
+  darkAccent: '#91A57D',
+  darkAccentHover: '#81946E',
+  darkCta: '#D49A57',
+  darkCtaHover: '#B98549',
+  darkBorder: '#453E35',
+  darkInputBorder: '#534B41',
+  darkError: '#D98982',
+  /** Dark equivalent of light mint card */
+  darkMintCard: '#2C3328',
 
-  success: '#7FB77E',
-  warning: '#E9B44C',
+  success: '#88A86E',
+  warning: '#D7A25B',
 } as const;
 
 const tokens = createTokens({
@@ -109,6 +113,7 @@ const lightTheme = {
   success: tokens.color.success,
   error: tokens.color.lightError,
   warning: tokens.color.warning,
+  mintCard: tokens.color.lightMintCard,
 } as const;
 
 const darkTheme = {
@@ -131,6 +136,7 @@ const darkTheme = {
   success: tokens.color.success,
   error: tokens.color.darkError,
   warning: tokens.color.warning,
+  mintCard: tokens.color.darkMintCard,
 } as const;
 
 export const themes = {
