@@ -1,14 +1,18 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-import { TamaguiProvider, Theme } from 'tamagui';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import "react-native-reanimated";
+import { TamaguiProvider, Theme } from "tamagui";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import tamaguiConfig, { capyfinePalette } from '@/tamagui.config';
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import tamaguiConfig, { capyfinePalette } from "@/tamagui.config";
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: '(public)',
 };
 
 const navigationLight = {
@@ -39,16 +43,18 @@ const navigationDark = {
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
-  const tamaguiTheme = isDark ? 'dark' : 'light';
+  const isDark = colorScheme === "dark";
+  const tamaguiTheme = isDark ? "dark" : "light";
 
   return (
     <TamaguiProvider config={tamaguiConfig} defaultTheme={tamaguiTheme}>
       <Theme name={tamaguiTheme}>
         <ThemeProvider value={isDark ? navigationDark : navigationLight}>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+          <Stack
+            screenOptions={{ headerShown: false }}
+            initialRouteName="(public)">
+            <Stack.Screen name="(public)" />
+            <Stack.Screen name="(app)" />
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>
