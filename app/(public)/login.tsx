@@ -1,20 +1,38 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Pressable } from "react-native";
+import { useState } from "react";
+import { ActivityIndicator, Pressable } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Button, Input, Text, YStack, useTheme } from "tamagui";
 
 import { AuthScreenShell } from "@/components/auth/auth-screen-shell";
-
-
-function goToAuthedTabs() {
-  router.replace("/(app)/(tabs)");
-}
+import { useAuth } from "@/context/auth";
 
 export default function LoginScreen() {
   const theme = useTheme();
   const iconColor = theme.textPlaceholder.val as string;
+  const { signIn } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSignIn = async () => {
+    if (!email.trim() || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    const { error: signInError } = await signIn(email, password);
+    if (signInError) {
+      setError(signInError);
+      setLoading(false);
+    }
+    // On success, the root layout guard swaps to the authenticated stack.
+  };
 
   return (
     <AuthScreenShell>
@@ -52,6 +70,8 @@ export default function LoginScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              value={email}
+              onChangeText={setEmail}
             />
             <YStack position="absolute" left={16} pointerEvents="none">
               <Feather name="mail" size={20} color={iconColor} />
@@ -80,6 +100,10 @@ export default function LoginScreen() {
               fontSize={16}
               color="$color"
               secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              returnKeyType="go"
+              onSubmitEditing={handleSignIn}
             />
             <YStack position="absolute" left={16} pointerEvents="none">
               <Feather name="lock" size={20} color={iconColor} />
@@ -101,6 +125,14 @@ export default function LoginScreen() {
         </YStack>
       </Animated.View>
 
+      {error && (
+        <Animated.View entering={FadeInDown.duration(400)}>
+          <Text color="#d9534f" fontSize={14} textAlign="center">
+            {error}
+          </Text>
+        </Animated.View>
+      )}
+
       <Animated.View entering={FadeInDown.duration(600).delay(400)}>
         <Button
           unstyled
@@ -119,12 +151,20 @@ export default function LoginScreen() {
           shadowOpacity={0.25}
           shadowRadius={12}
           elevation={4}
-          onPress={goToAuthedTabs}
+          opacity={loading ? 0.7 : 1}
+          disabled={loading}
+          onPress={handleSignIn}
         >
-          <Text color="white" fontSize={18} fontWeight="700">
-            Sign In
-          </Text>
-          <Feather name="arrow-right" size={20} color="white" />
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <>
+              <Text color="white" fontSize={18} fontWeight="700">
+                Sign In
+              </Text>
+              <Feather name="arrow-right" size={20} color="white" />
+            </>
+          )}
         </Button>
       </Animated.View>
 

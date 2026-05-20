@@ -1,21 +1,23 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { router, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import { Alert, Pressable, Text } from "react-native";
 
 import { HapticTab } from "@/components/haptic-tab";
+import { useAuth } from "@/context/auth";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { capyfinePalette } from "@/tamagui.config";
-
-function logout() {
-  Alert.alert("Logout", "Are you sure you want to logout?", [
-    { text: "Cancel", style: "cancel" },
-    { text: "Logout", onPress: () => router.replace("/(public)") },
-  ]);
-}
 
 export default function AuthedTabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
+  const { signOut } = useAuth();
+
+  const handleLogout = () => {
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Logout", style: "destructive", onPress: () => signOut() },
+    ]);
+  };
   const accent = isDark
     ? capyfinePalette.darkAccent
     : capyfinePalette.lightAccent;
@@ -54,7 +56,7 @@ export default function AuthedTabLayout() {
         ),
         headerRight: () => (
           <Pressable
-            onPress={logout}
+            onPress={handleLogout}
             hitSlop={12}
             accessibilityRole="button"
             accessibilityLabel="Log out"
