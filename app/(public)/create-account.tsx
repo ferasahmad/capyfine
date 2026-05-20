@@ -1,19 +1,44 @@
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Pressable } from "react-native";
+import { useState } from "react";
+import { ActivityIndicator, Pressable } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Button, Input, Text, YStack, useTheme } from "tamagui";
 
 import { AuthScreenShell } from "@/components/auth/auth-screen-shell";
-
-function goToAuthedTabs() {
-  router.replace("/(app)/(tabs)");
-}
+import { useAuth } from "@/context/auth";
 
 export default function CreateAccountScreen() {
   const theme = useTheme();
   const iconColor = theme.textPlaceholder.val as string;
+  const { signUp } = useAuth();
+
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSignUp = async () => {
+    if (!fullName.trim() || !email.trim() || !password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+    setLoading(true);
+    setError(null);
+    const { error: signUpError } = await signUp({ fullName, email, password });
+    if (signUpError) {
+      setError(signUpError);
+      setLoading(false);
+      return;
+    }
+    // On success, the root layout guard swaps to the authenticated stack.
+  };
 
   return (
     <AuthScreenShell>
@@ -49,6 +74,8 @@ export default function CreateAccountScreen() {
               fontSize={16}
               color="$color"
               autoCapitalize="words"
+              value={fullName}
+              onChangeText={setFullName}
             />
             <YStack position="absolute" left={16} pointerEvents="none">
               <Feather name="user" size={20} color={iconColor} />
@@ -79,6 +106,8 @@ export default function CreateAccountScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              value={email}
+              onChangeText={setEmail}
             />
             <YStack position="absolute" left={16} pointerEvents="none">
               <Feather name="mail" size={20} color={iconColor} />
@@ -107,6 +136,10 @@ export default function CreateAccountScreen() {
               fontSize={16}
               color="$color"
               secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              returnKeyType="go"
+              onSubmitEditing={handleSignUp}
             />
             <YStack position="absolute" left={16} pointerEvents="none">
               <Feather name="lock" size={20} color={iconColor} />
@@ -114,6 +147,14 @@ export default function CreateAccountScreen() {
           </YStack>
         </YStack>
       </Animated.View>
+
+      {error && (
+        <Animated.View entering={FadeInDown.duration(400)}>
+          <Text color="#d9534f" fontSize={14} textAlign="center">
+            {error}
+          </Text>
+        </Animated.View>
+      )}
 
       <Animated.View entering={FadeInDown.duration(600).delay(500)}>
         <Button
@@ -133,12 +174,20 @@ export default function CreateAccountScreen() {
           shadowOpacity={0.25}
           shadowRadius={12}
           elevation={4}
-          onPress={goToAuthedTabs}
+          opacity={loading ? 0.7 : 1}
+          disabled={loading}
+          onPress={handleSignUp}
         >
-          <Text color="white" fontSize={18} fontWeight="700">
-            Create Account
-          </Text>
-          <Feather name="arrow-right" size={20} color="white" />
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <>
+              <Text color="white" fontSize={18} fontWeight="700">
+                Create Account
+              </Text>
+              <Feather name="arrow-right" size={20} color="white" />
+            </>
+          )}
         </Button>
       </Animated.View>
 
